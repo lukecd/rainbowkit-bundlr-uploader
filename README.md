@@ -1,4 +1,8 @@
-This is a [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) project bootstrapped with [`create-rainbowkit`](https://github.com/rainbow-me/rainbowkit/tree/main/packages/create-rainbowkit).
+# Bundlr Rainbowkit Uploader
+
+This is a [Bundlr](https://bundlr.network/ + [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) + [Tailwind](https://tailwindcss.com/) project to demonstrate using Bundlr with RainbowKit v1.x.
+
+Users can fork this project and build on top of it, or you can copy and paste pieces into your own project.
 
 ## Getting Started
 
@@ -10,20 +14,15 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## UI
 
-## Learn More
+<img width="400" src="https://github.com/lukecd/rainbowkit-bundlr-uploader/blob/main/assets/uploader-ui.png?raw=true" />
 
-To learn more about this stack, take a look at the following resources:
+The UI demonstrates both the RainbowKit connect button and a file uploader component that uses Bundlr to upload the selected file.
 
-- [RainbowKit Documentation](https://rainbowkit.com) - Learn how to customize your wallet connection flow.
-- [wagmi Documentation](https://wagmi.sh) - Learn how to interact with Ethereum.
-- [Next.js Documentation](https://nextjs.org/docs) - Learn how to build a Next.js application.
+## Files
 
-You can check out [the RainbowKit GitHub repository](https://github.com/rainbow-me/rainbowkit) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+-   `/utils/getBundlr.ts`: Utility function that connects to a Bundlr node, if you're copy and pasting code into your project, pull from here.
+-   `/utils/fundAndUpload.ts`: Utility function. You pass it a File object and fileType, the function checks the price to upload, the checks your current funded balance, funds if necessary, then uploads the file and returns the transaction ID.
+-   `/components/BundlrUploader.tsx`: UI component, file uploader
+-   `/components/Spinner.tsx`: UI component, spinner that shows when a tx is processing

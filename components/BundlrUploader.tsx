@@ -1,9 +1,10 @@
 "use client";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import { useState, useEffect, useRef } from "react";
-import getBundlr from "../utils/getBundlr";
 import Spinner from "./Spinner";
-import fileReaderStream from "filereader-stream";
+import fundAndUpload from "../utils/fundAndUpload";
+import { useAccount } from "wagmi";
 
 export const BundlrUploader: React.FC = () => {
 	const [files, setFiles] = useState<File[]>([]);
@@ -15,7 +16,9 @@ export const BundlrUploader: React.FC = () => {
 	const [curBalance, setCurBalance] = useState<number>(0);
 	const [txProcessing, setTxProcessing] = useState<boolean>(false);
 	const [message, setMessage] = useState<string>("");
+	const { address, isConnected } = useAccount();
 
+	// Called when a file is selected
 	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files && event.target.files[0]) {
 			setSelectedFile(event.target.files[0]);
@@ -23,6 +26,7 @@ export const BundlrUploader: React.FC = () => {
 		}
 	};
 
+	// Called when the user clicks the Upload button
 	const handleUpload = async () => {
 		setMessage("");
 		if (!selectedFile) {
@@ -30,38 +34,13 @@ export const BundlrUploader: React.FC = () => {
 			return;
 		}
 		setTxProcessing(true);
-		const bundlr = await getBundlr();
-		console.log("got bundlr=", bundlr);
+
 		if (selectedFile) {
-			try {
-				const dataStream = fileReaderStream(selectedFile);
-				const price = await bundlr.getPrice(selectedFile?.size);
-				const balance = await bundlr.getLoadedBalance();
-
-				if (price.isGreaterThanOrEqualTo(balance)) {
-					console.log("Funding node.");
-					await bundlr.fund(price);
-				} else {
-					console.log("Funding not needed, balance sufficient.");
-				}
-
-				const tx = await bundlr.upload(dataStream, {
-					tags: [{ name: "Content-Type", value: fileType }],
-				});
-
-				console.log(`File uploaded ==> https://arweave.net/${tx.id}`);
-				setMessage(
-					`File <a class="underline" target="_blank" href="https://arweave.net/${tx.id}">uploaded</a>`,
-				);
-			} catch (e) {
-				console.log("Error on upload, ", e);
-			}
-			setTxProcessing(false);
+			const txId = await fundAndUpload(selectedFile, fileType);
+			console.log(`File uploaded ==> https://arweave.net/${txId}`);
+			setMessage(`File <a class="underline" target="_blank" href="https://arweave.net/${txId}">uploaded</a>`);
 		}
-	};
-
-	const handleStrongProvenanceChange = (checked: boolean) => {
-		setIsStrongProvenance(checked);
+		setTxProcessing(false);
 	};
 
 	return (
@@ -108,17 +87,20 @@ export const BundlrUploader: React.FC = () => {
 					</div>
 				))}
 				{message && <div className="text-red-500" dangerouslySetInnerHTML={{ __html: message }} />}{" "}
-				<button
-					className={`mt-5 w-full py-2 px-4 bg-background text-text rounded-md flex items-center justify-center transition-colors duration-500 ease-in-out border-2 border-background-contrast ${
-						txProcessing
-							? "bg-background-contrast text-white cursor-not-allowed"
-							: "hover:bg-background-contrast hover:text-white"
-					}`}
-					onClick={handleUpload}
-					disabled={txProcessing}
-				>
-					{txProcessing ? <Spinner color="text-background" /> : "Upload"}
-				</button>
+				{!isConnected && <ConnectButton />}
+				{isConnected && (
+					<button
+						className={`mt-5 w-full py-2 px-4 bg-background text-text rounded-md flex items-center justify-center transition-colors duration-500 ease-in-out border-2 border-background-contrast ${
+							txProcessing
+								? "bg-background-contrast text-white cursor-not-allowed"
+								: "hover:bg-background-contrast hover:text-white"
+						}`}
+						onClick={handleUpload}
+						disabled={txProcessing}
+					>
+						{txProcessing ? <Spinner color="text-background" /> : "Upload"}
+					</button>
+				)}
 			</div>
 		</div>
 	);

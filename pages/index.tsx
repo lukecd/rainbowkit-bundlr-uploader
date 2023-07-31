@@ -1,4 +1,3 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
@@ -14,9 +13,6 @@ const Home: NextPage = () => {
 			</Head>
 
 			<main className={styles.main}>
-				<div className="mb-3">
-					<ConnectButton />
-				</div>
 				<BundlrUploader />
 			</main>
 		</div>

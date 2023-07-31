@@ -26,7 +26,6 @@ const getBundlr = async (
 	//@ts-expect-error injected
 	client.getAddress = async () => client.getAddresses().then((a) => a[0]);
 
-	console.log("client=", client);
 	const bundlr = new WebBundlr(url, currency, client, { providerUrl });
 
 	// @ts-expect-error
@@ -83,8 +82,9 @@ const getBundlr = async (
 			primaryType: "Bundlr",
 		});
 	};
-	return bundlr;
 	console.log("Connected to: " + bundlr.address);
+
+	return bundlr;
 };
 
 export default getBundlr;
