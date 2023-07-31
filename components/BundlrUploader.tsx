@@ -31,6 +31,7 @@ export const BundlrUploader: React.FC = () => {
 		}
 		setTxProcessing(true);
 		const bundlr = await getBundlr();
+		console.log("got bundlr=", bundlr);
 		if (selectedFile) {
 			try {
 				const dataStream = fileReaderStream(selectedFile);

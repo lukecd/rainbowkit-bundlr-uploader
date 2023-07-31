@@ -55,8 +55,7 @@ const getBundlr = async (
 		return { txId: undefined, tx: config };
 	};
 
-	//otherwise
-
+	// Otherwise
 	bundlr.currencyConfig.sendTx = async (data): Promise<string> => {
 		const hash = await client.sendTransaction({
 			to: data.to,
@@ -84,7 +83,7 @@ const getBundlr = async (
 			primaryType: "Bundlr",
 		});
 	};
-
+	return bundlr;
 	console.log("Connected to: " + bundlr.address);
 };
 
